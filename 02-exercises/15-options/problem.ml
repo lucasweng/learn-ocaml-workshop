@@ -31,7 +31,10 @@ let%test _ =
 (* Implement the function [safe_divide ~dividend ~divisor], which takes two
    [int]s and returns an [int option]. It should return [None] if [divisor = 0],
    and otherwise return [Some x] where [x] is the division result *)
-let safe_divide ~dividend ~divisor = failwith "For you to implement"
+let safe_divide ~dividend ~divisor =
+  match divisor with
+  | 0 -> None
+  | i -> Some(dividend / divisor)
 
 let%test "Testing safe_divide..." =
   match (safe_divide ~dividend:3 ~divisor:2) with
@@ -47,7 +50,10 @@ let%test "Testing safe_divide..." =
    returns a [string option] that is:
    - [Some x], where x is the concatenation of the two strings, if they both exist
    - [None] if either of the strings is [None]  *)
-let option_concatenate string1 string2 = failwith "For you to implement" 
+let option_concatenate string1 string2 =
+  match string1, string2 with
+  | None, _ | _, None -> None
+  | Some s1, Some s2 -> Some (s1 ^ s2)
 
 let%test "Testing option_concatenate..." =
   match option_concatenate (Some "hello") (Some "world") with
@@ -119,8 +125,8 @@ let labeled_concatenate ?(separator = "")  ~string1 ~string2 =
   string1 ^ separator ^ string2
 
 (* Try uncommenting this code. What is the compile error? *)
-(* let () = 
- *   assert (String.(=) "hi" (labeled_concatenate ~string1:"h" ~string2:"i")) *)
+let () = 
+  assert (String.(=) "hi" (labeled_concatenate ~string1:"h" ~string2:"i" ?separator:None))
 
 (* This is because optional arguments can only be safely omitted if there's an
    unlabeled, non-optional argument after the optional argument in the function
