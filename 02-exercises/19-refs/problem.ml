@@ -17,12 +17,34 @@ let () =
    You could do this using [List.fold], but for the purpose of this exercise,
    let's iterate over the list and explicitly maintain refs of the minimum and
    maximum values seen so far instead. *)
+exception Empty_list
+
 let min_and_max lst =
-  failwith "For you to implement"
+  match List.hd lst with
+  | None -> raise Empty_list
+  | Some n ->
+    let rec aux (min, max) l =
+      match l with
+      | [] -> (!min, !max)
+      | x :: xs ->
+        if x < !min then min := x
+        else if x > !max then max := x;
+        aux (min, max) xs
+    in
+    aux (ref n, ref n) lst
 
 (* By the way, can you guess how a [ref] is implemented under the hood? 
 
    (Hint: exercise 18.) *)
+
+module RefImpl = struct
+  type 'a t = {
+    mutable contents : 'a;
+  }
+  let ref x = { contents = x }
+  let (!) x = x.contents
+  let (:=) x y = x.contents <- y
+end
 
 let%test "Testing min_and_max..." =
   [%compare.equal: int * int] (min_and_max [5;9;2;4;3]) (2,9) 
