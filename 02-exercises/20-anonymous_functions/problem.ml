@@ -65,13 +65,13 @@ let () =
    to an integer and applies the function to the supplied argument if it is not
    zero, and otherwise just returns 0. *)
 let apply_if_nonzero f i =
-  failwith "For you to implement"
+  if i = 0 then 0 else f i
 
 (* Now, using [apply_if_nonzero] with an anonymous function, write
    [add1_if_nonzero], which takes an integer and adds 1 to it if it is not zero,
    and otherwise just returns 0. *)
 let add1_if_nonzero i = 
-  failwith "For you to implement"
+  apply_if_nonzero (fun n -> n + 1) i
 
 let%test "Testing add1_if_nonzero..." =
   Int.(=) 0 (add1_if_nonzero 0)
