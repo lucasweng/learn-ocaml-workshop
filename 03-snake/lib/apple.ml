@@ -15,4 +15,14 @@ let location t = t.location
    - You can generate a random int up to [bound] via [Random.int bound].
    - You can pick a random element out of a list using [List.random_element_exn list]. 
 *)
-let create ~height ~width ~invalid_locations = failwith "For you to implement"
+let create ~height ~width ~invalid_locations =
+  let possible_locations =
+    List.init height ~f:(fun row ->
+      List.init width ~f:(fun col -> { Position.row; col }))
+    |> List.concat
+    |> List.filter ~f:(fun pos ->
+      not (List.mem invalid_locations pos ~equal:[%compare.equal: Position.t]))
+  in
+  match possible_locations with
+  | [] -> None
+  | _ -> Some { location = List.random_element_exn possible_locations }
