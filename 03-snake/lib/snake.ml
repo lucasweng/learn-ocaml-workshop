@@ -32,7 +32,7 @@ let create ~length =
 let grow_over_next_steps t by_how_much = t
 
 (* TODO: Implement [locations]. *)
-let locations t = failwith "For you to implement"
+let locations t = t.locations
 
 (* TODO: Implement [head_location]. *)
 let head_location t = { Position.row = 0; col = 0 }
