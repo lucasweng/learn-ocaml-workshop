@@ -36,7 +36,7 @@ let grow_over_next_steps t by_how_much =
 let locations t = t.locations
 
 (* TODO: Implement [head_location]. *)
-let head_location t = { Position.row = 0; col = 0 }
+let head_location t = List.hd_exn t.locations
 
 (* TODO: Implement [set_direction]. *)
 let set_direction t direction = t
