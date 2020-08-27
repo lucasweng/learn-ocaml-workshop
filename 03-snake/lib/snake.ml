@@ -39,7 +39,7 @@ let locations t = t.locations
 let head_location t = List.hd_exn t.locations
 
 (* TODO: Implement [set_direction]. *)
-let set_direction t direction = t
+let set_direction t direction = { t with direction }
 
 (* TODO: Implement [step].
 
