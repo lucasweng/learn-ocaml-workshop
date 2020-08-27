@@ -29,7 +29,8 @@ let create ~length =
 
    Notice that this function should not actually grow the snake, but only record that we
    should grow the snake one block for the next [by_how_much] squares. *)
-let grow_over_next_steps t by_how_much = t
+let grow_over_next_steps t by_how_much =
+  { t with extensions_remaining = t.extensions_remaining + by_how_much }
 
 (* TODO: Implement [locations]. *)
 let locations t = t.locations
