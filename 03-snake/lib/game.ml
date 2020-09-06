@@ -4,6 +4,7 @@ type t =
   { mutable snake : Snake.t
   ; mutable apple : Apple.t
   ; mutable game_state : Game_state.t
+  ; mutable score : Score.t
   ; height : int
   ; width : int
   ; amount_to_grow : int
@@ -23,10 +24,11 @@ let in_bounds t { Position.row; col } =
 let create ~height ~width ~initial_snake_length ~amount_to_grow =
   let snake = Snake.create ~length:initial_snake_length in
   let apple = Apple.create ~height ~width ~invalid_locations:(Snake.locations snake) in
+  let score = Score.create () in
   match apple with
   | None -> failwith "unable to create initial apple"
   | Some apple ->
-    let t = { snake; apple; game_state = In_progress; height; width; amount_to_grow; } in
+    let t = { snake; apple; game_state = In_progress; score; height; width; amount_to_grow; } in
     if List.exists (Snake.locations snake) ~f:(fun pos -> not (in_bounds t pos))
     then failwith "unable to create initial snake"
     else t
@@ -50,6 +52,7 @@ let maybe_consume_apple t head =
   if not ([%compare.equal: Position.t] head (Apple.location t.apple))
   then ()
   else (
+    t.score <- Score.score t.score;
     let snake = Snake.grow_over_next_steps t.snake t.amount_to_grow in
     let apple =
       Apple.create
