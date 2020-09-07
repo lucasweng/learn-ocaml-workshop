@@ -15,6 +15,7 @@ module Constants = struct
   let header_height = 50
   let play_area_width = 450
   let block_size = 18
+  let text_size = 20
 end
 
 let only_one : bool ref = ref false
@@ -38,7 +39,13 @@ let draw_block { Position.row; col } ~color =
   Graphics.fill_rect (col + 1) (row + 1) (block_size - 1) (block_size - 1)
 ;;
 
-let draw_header ~game_state =
+let draw_text ~x ~y ~size ?(color=Colors.black) text =
+  Graphics.set_color color;
+  Graphics.set_text_size size;
+  Graphics.moveto x y;
+  Graphics.draw_string (Printf.sprintf " %s" text)
+
+let draw_header ~game_state ~score =
   let open Constants in
   let header_color =
     match (game_state : Game_state.t) with
@@ -48,11 +55,11 @@ let draw_header ~game_state =
   in
   Graphics.set_color header_color;
   Graphics.fill_rect 0 play_area_height play_area_width header_height;
+  let text_y = play_area_height + 25 in
   let header_text = Game_state.to_string game_state in
-  Graphics.set_color Colors.black;
-  Graphics.set_text_size 20;
-  Graphics.moveto 0 (play_area_height + 25);
-  Graphics.draw_string (Printf.sprintf " %s" header_text)
+  draw_text ~x:0 ~y:text_y ~size:text_size header_text;
+  let score_text = "Score: " ^ Score.to_string score in
+  draw_text ~x:(play_area_width - 80) ~y:text_y ~size:text_size score_text
 ;;
 
 let draw_play_area () =
@@ -77,7 +84,8 @@ let render game =
   let apple = Game.apple game in
   let game_state = Game.game_state game in
   let snake_locations = Snake.locations snake in
-  draw_header ~game_state;
+  let score = Game.score game in
+  draw_header ~game_state ~score;
   draw_play_area ();
   draw_apple apple;
   draw_snake snake_locations;
