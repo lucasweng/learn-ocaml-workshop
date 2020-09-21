@@ -29,6 +29,9 @@ val game_state : t -> Game_state.t
 (** [score] returns the score of the current game. *)
 val score : t -> Score.t
 
+(** [to_change_color] returns [true] if the snake is to change color in the next step. *)
+val to_change_color : t -> bool
+
 (** [step] is called in a loop, and the game is re-rendered after each call. *)
 val step : t -> unit
 

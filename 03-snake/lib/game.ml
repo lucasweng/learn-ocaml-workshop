@@ -29,7 +29,7 @@ let create ~height ~width ~initial_snake_length ~amount_to_grow =
   match apple with
   | None -> failwith "unable to create initial apple"
   | Some apple ->
-    let t = { snake; apple; game_state = In_progress; score; height; width; amount_to_grow; to_change_color=false } in
+    let t = { snake; apple; game_state = In_progress; score; height; width; amount_to_grow; to_change_color = false } in
     if List.exists (Snake.locations snake) ~f:(fun pos -> not (in_bounds t pos))
     then failwith "unable to create initial snake"
     else t
@@ -38,6 +38,7 @@ let snake t = t.snake
 let apple t = t.apple
 let game_state t = t.game_state
 let score t = t.score
+let to_change_color t = t.to_change_color
 
 (* TODO: Implement [set_direction]. *)
 let set_direction t direction = t.snake <- Snake.set_direction t.snake direction

@@ -2,7 +2,14 @@ open! Base
 
 module Colors = struct
   let black = Graphics.rgb 000 000 000
-  let green = Graphics.rgb 000 255 000
+  let body_colors =
+    [ Graphics.rgb 000 255 000
+    ; Graphics.rgb 255 255 051
+    ; Graphics.rgb 255 178 102
+    ; Graphics.rgb 255 102 102
+    ; Graphics.rgb 000 255 255
+    ; Graphics.rgb 224 224 224
+    ]
   let head_color = Graphics.rgb 100 100 125
   let apple_color = Graphics.rgb 255 000 000
   let game_in_progress = Graphics.rgb 100 100 200
@@ -73,8 +80,27 @@ let draw_apple apple =
   draw_block apple_location ~color:Colors.apple_color
 ;;
 
-let draw_snake snake_locations =
-  List.iter snake_locations ~f:(draw_block ~color:Colors.green);
+let current_body_color = ref (List.nth_exn Colors.body_colors 0)
+
+let random_body_color () =
+  List.nth_exn Colors.body_colors (Random.int_incl 0 (List.length Colors.body_colors - 1))
+
+let rec set_new_color current_color get_random_color =
+  let random_color = get_random_color() in
+  if current_color = random_color
+  then set_new_color current_color get_random_color
+  else random_color
+
+let draw_snake snake_locations to_change_color =
+  let body_color =
+    if not to_change_color
+    then !current_body_color
+    else (
+      current_body_color := set_new_color !current_body_color random_body_color;
+      !current_body_color
+    )
+  in
+  List.iter snake_locations ~f:(draw_block ~color:body_color);
   (* Snake head is a different color *)
   draw_block ~color:Colors.head_color (List.hd_exn snake_locations)
 ;;
@@ -85,10 +111,11 @@ let render game =
   let game_state = Game.game_state game in
   let snake_locations = Snake.locations snake in
   let score = Game.score game in
+  let to_change_color = Game.to_change_color game in
   draw_header ~game_state ~score;
   draw_play_area ();
   draw_apple apple;
-  draw_snake snake_locations;
+  draw_snake snake_locations to_change_color;
   Graphics.display_mode true;
   Graphics.synchronize ()
 ;;
