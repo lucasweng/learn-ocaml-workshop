@@ -36,7 +36,8 @@ let%expect_test "Testing [Game.create]..." =
           ((direction Right) (extensions_remaining 0)
            (locations (((col 2) (row 0)) ((col 1) (row 0)) ((col 0) (row 0))))))
          (apple ((location ((col 1) (row 8))))) (game_state In_progress)
-         (score (Score 0)) (height 10) (width 10) (amount_to_grow 3)) |}]
+         (score (Score 0)) (height 10) (width 10) (amount_to_grow 3)
+         (to_change_color false)) |}]
 ;;
 
 let%expect_test "Testing [Game.create] failure..." =

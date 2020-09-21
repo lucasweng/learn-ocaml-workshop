@@ -24,7 +24,8 @@ let%expect_test "Testing [Game.step] with wall collision..." =
           ((direction Right) (extensions_remaining 0)
            (locations (((col 9) (row 0)) ((col 8) (row 0)) ((col 7) (row 0))))))
          (apple ((location ((col 1) (row 8))))) (game_state In_progress)
-         (score (Score 0)) (height 10) (width 10) (amount_to_grow 3)) |}];
+         (score (Score 0)) (height 10) (width 10) (amount_to_grow 3)
+         (to_change_color false)) |}];
   step_n_times t 1;
   Stdio.printf !"%{sexp: t}\n%!" t;
   [%expect
@@ -34,7 +35,7 @@ let%expect_test "Testing [Game.step] with wall collision..." =
            (locations (((col 10) (row 0)) ((col 9) (row 0)) ((col 8) (row 0))))))
          (apple ((location ((col 1) (row 8)))))
          (game_state (Game_over "Wall collision")) (score (Score 0)) (height 10)
-         (width 10) (amount_to_grow 3)) |}]
+         (width 10) (amount_to_grow 3) (to_change_color false)) |}]
 ;;
 
 let%expect_test "Testing [Game.step] with apple consumption..." =
@@ -57,7 +58,8 @@ let%expect_test "Testing [Game.step] with apple consumption..." =
           ((direction Up) (extensions_remaining 3)
            (locations (((col 5) (row 9)) ((col 5) (row 8)) ((col 5) (row 7))))))
          (apple ((location ((col 6) (row 7))))) (game_state In_progress)
-         (score (Score 1)) (height 10) (width 10) (amount_to_grow 3)) |}];
+         (score (Score 1)) (height 10) (width 10) (amount_to_grow 3)
+         (to_change_color true)) |}];
   set_direction t Direction.Left;
   step_n_times t 3;
   Stdio.printf !"%{sexp: t}\n%!" t;
@@ -69,7 +71,8 @@ let%expect_test "Testing [Game.step] with apple consumption..." =
             (((col 2) (row 9)) ((col 3) (row 9)) ((col 4) (row 9)) ((col 5) (row 9))
              ((col 5) (row 8)) ((col 5) (row 7))))))
          (apple ((location ((col 6) (row 7))))) (game_state In_progress)
-         (score (Score 1)) (height 10) (width 10) (amount_to_grow 3)) |}]
+         (score (Score 1)) (height 10) (width 10) (amount_to_grow 3)
+         (to_change_color false)) |}]
 ;;
 
 let%expect_test "Testing [Game.step] with self collision..." =
@@ -98,7 +101,8 @@ let%expect_test "Testing [Game.step] with self collision..." =
             (((col 4) (row 8)) ((col 4) (row 9)) ((col 5) (row 9)) ((col 5) (row 8))
              ((col 5) (row 7))))))
          (apple ((location ((col 6) (row 7))))) (game_state In_progress)
-         (score (Score 1)) (height 10) (width 10) (amount_to_grow 3)) |}];
+         (score (Score 1)) (height 10) (width 10) (amount_to_grow 3)
+         (to_change_color false)) |}];
   set_direction t Direction.Right;
   step_n_times t 1;
   Stdio.printf !"%{sexp: t}\n%!" t;
@@ -111,7 +115,7 @@ let%expect_test "Testing [Game.step] with self collision..." =
              ((col 5) (row 7))))))
          (apple ((location ((col 6) (row 7)))))
          (game_state (Game_over "Self collision")) (score (Score 1)) (height 10)
-         (width 10) (amount_to_grow 3)) |}]
+         (width 10) (amount_to_grow 3) (to_change_color false)) |}]
 ;;
 
 let%expect_test "Testing [Game.step] with game winning..." =
@@ -137,7 +141,8 @@ let%expect_test "Testing [Game.step] with game winning..." =
             (((col 0) (row 1)) ((col 1) (row 1)) ((col 2) (row 1)) ((col 2) (row 0))
              ((col 1) (row 0))))))
          (apple ((location ((col 0) (row 0))))) (game_state In_progress)
-         (score (Score 2)) (height 2) (width 3) (amount_to_grow 3)) |}];
+         (score (Score 2)) (height 2) (width 3) (amount_to_grow 3)
+         (to_change_color true)) |}];
   set_direction t Direction.Down;
   step_n_times t 1;
   Stdio.printf !"%{sexp: t}\n%!" t;
@@ -149,5 +154,5 @@ let%expect_test "Testing [Game.step] with game winning..." =
             (((col 0) (row 0)) ((col 0) (row 1)) ((col 1) (row 1)) ((col 2) (row 1))
              ((col 2) (row 0)) ((col 1) (row 0))))))
          (apple ((location ((col 0) (row 0))))) (game_state Win) (score (Score 3))
-         (height 2) (width 3) (amount_to_grow 3)) |}]
+         (height 2) (width 3) (amount_to_grow 3) (to_change_color true)) |}]
 ;;

@@ -8,6 +8,7 @@ type t =
   ; height : int
   ; width : int
   ; amount_to_grow : int
+  ; mutable to_change_color : bool
   }
 [@@deriving sexp_of]
 
@@ -28,7 +29,7 @@ let create ~height ~width ~initial_snake_length ~amount_to_grow =
   match apple with
   | None -> failwith "unable to create initial apple"
   | Some apple ->
-    let t = { snake; apple; game_state = In_progress; score; height; width; amount_to_grow; } in
+    let t = { snake; apple; game_state = In_progress; score; height; width; amount_to_grow; to_change_color=false } in
     if List.exists (Snake.locations snake) ~f:(fun pos -> not (in_bounds t pos))
     then failwith "unable to create initial snake"
     else t
@@ -51,9 +52,10 @@ let set_direction t direction = t.snake <- Snake.set_direction t.snake direction
      -- if apple cannot be regenerated, win game; otherwise, grow the snake *)
 let maybe_consume_apple t head =
   if not ([%compare.equal: Position.t] head (Apple.location t.apple))
-  then ()
+  then t.to_change_color <- false
   else (
     t.score <- Score.score t.score;
+    t.to_change_color <- true;
     let snake = Snake.grow_over_next_steps t.snake t.amount_to_grow in
     let apple =
       Apple.create
