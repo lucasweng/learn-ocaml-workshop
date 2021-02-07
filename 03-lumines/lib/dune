@@ -5,7 +5,7 @@
  (libraries async graphics base)
  (inline_tests)
  (preprocess
-  (pps ppx_jane)))
+  (pps ppx_jane -allow-unannotated-ignores)))
 
 (env
  (dev
