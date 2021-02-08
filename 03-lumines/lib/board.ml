@@ -38,10 +38,26 @@ let remove_squares t =
 let add_piece_and_apply_gravity t ~moving_piece ~col =
   (* TODO: insert (affix) the moving piece into the board, applying gravity
      appropriately. Make sure to leave the board in a valid state. *)
-  ignore t;
-  ignore moving_piece;
-  ignore col;
-  true
+  let find_row ~col =
+    List.find (List.range 0 t.height) ~f:(fun i ->
+      match get t { Point.row = i; col } with
+      | None -> true
+      | Some _ -> false)
+  in
+  let left_row = find_row ~col in
+  let right_row = find_row ~col:(col + 1) in
+  match left_row, right_row with
+  | None, _ | _, None -> false
+  | Some left_row, Some right_row ->
+    if left_row < t.height - 1 && right_row < t.height - 1
+    then (
+      set t { row = left_row; col } (Some moving_piece.Moving_piece.bottom_left);
+      set t { row = left_row + 1; col } (Some moving_piece.Moving_piece.top_left);
+      set t { row = right_row; col = col + 1 } (Some moving_piece.Moving_piece.bottom_right);
+      set t { row = right_row + 1; col = col + 1 } (Some moving_piece.Moving_piece.top_right);
+      mark_squares_that_are_sweepable t;
+      true)
+    else false
 ;;
 
 let is_empty t point =
