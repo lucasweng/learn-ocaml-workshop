@@ -46,16 +46,12 @@ let can_move t ~row ~col =
       else Board.is_empty t.board point && can_move))
 ;;
 
-let move_left t =
-  (* TODO: Move the active piece left one square *)
-  ignore t
+let move t ~col =
+  if can_move t ~row:t.moving_piece_row ~col then t.moving_piece_col <- col
 ;;
 
-let move_right t =
-  (* TODO: Move the active piece right one square *)
-  ignore t
-;;
-
+let move_left t = move t ~col:(t.moving_piece_col - 1)
+let move_right t = move t ~col:(t.moving_piece_col + 1)
 let rotate_right t = t.moving_piece <- Moving_piece.rotate_right t.moving_piece
 let rotate_left t = t.moving_piece <- Moving_piece.rotate_left t.moving_piece
 
