@@ -81,7 +81,10 @@ let tick t =
      Note: We want to guarantee that the board is in a valid state at the end of
      [tick]. Depending on your implementation, you might need to check if the
      game is over here. *)
-  ignore t
+  let new_row = t.moving_piece_row - 1 in
+  if can_move t ~row:new_row ~col:t.moving_piece_col
+  then t.moving_piece_row <- new_row
+  else drop t
 ;;
 
 (* Tests *)
