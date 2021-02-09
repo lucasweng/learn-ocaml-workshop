@@ -36,10 +36,14 @@ let can_move t ~row ~col =
      corner is at [row] [col] will cause the board to be invalid
      either because the piece will collide with a filled-in square on
      the board or because it runs off the board *)
-  ignore row;
-  ignore col;
-  ignore t;
-  false
+  if row < 0 || col < 0 || col > t.width - 2
+  then false
+  else (
+    let coords = Moving_piece.coords ~bottom_left:{ Point.row; col } in
+    List.fold coords ~init:true ~f:(fun can_move point ->
+      if point.Point.row >= t.height
+      then can_move
+      else Board.is_empty t.board point && can_move))
 ;;
 
 let move_left t =
