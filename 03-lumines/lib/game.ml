@@ -65,7 +65,13 @@ let drop t =
 
      Note: Depending on your implementation, you might need to check if the game
      is over here.  *)
-  ignore t
+  if not
+    (Board.add_piece_and_apply_gravity
+      t.board
+      ~moving_piece:t.moving_piece
+      ~col:t.moving_piece_col)
+  then t.game_over := true;
+  new_moving_piece t
 ;;
 
 let tick t =
