@@ -21,7 +21,34 @@ let mark_squares_that_are_sweepable t =
 
      Note that, for example, a 2x3 rectangle of all the same color should also
      be marked by these criteria. *)
-  ignore t
+  List.iter (List.range 0 t.width) ~f:(fun col ->
+    List.iter (List.range 0 t.height) ~f:(fun row ->
+      match get t { col; row } with
+      | None -> ()
+      | Some filled_squre -> Filled_square.unmark filled_squre));
+  List.iter (List.range 0 (t.width - 1)) ~f:(fun col ->
+    List.iter (List.range 0 (t.height - 1)) ~f:(fun row ->
+      let coords = Moving_piece.coords ~bottom_left:{ Point.row; col } in
+      let colors =
+        List.map coords ~f:(get t)
+        |> List.fold ~init:[] ~f:(fun acc t ->
+          match t with
+          | None -> None :: acc
+          | Some t ->
+            let color = Some t.Filled_square.color in
+            (match acc with
+            | [] -> [color]
+            | [c] ->
+              if Option.equal Color.equal color c then acc else color :: acc
+            | _ -> acc))
+      in
+      match colors with
+      | [Some _] ->
+        List.iter coords ~f:(fun point ->
+          match get t point with
+          | None -> ()
+          | Some filled_square -> Filled_square.to_sweep filled_square)
+      | _ -> ()))
 ;;
 
 let remove_squares t =
