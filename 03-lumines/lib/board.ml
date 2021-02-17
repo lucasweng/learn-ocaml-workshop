@@ -59,7 +59,23 @@ let remove_squares t =
      At the end of this function, we should call
      [mark_squares_that_are_sweepable] so that we ensure that we leave the board
      in a valid state.  *)
-  ignore (mark_squares_that_are_sweepable t)
+  let squares_to_remove =
+    List.fold (List.range 0 t.width) ~init:[] ~f:(fun acc col ->
+      List.fold (List.range 0 t.height) ~init:acc ~f:(fun acc row ->
+        let point = { Point.col; row } in
+        match get t point with
+        | Some filled_square ->
+          if Filled_square.Sweeper_state.equal filled_square.sweeper_state Swept
+          then point :: acc
+          else acc
+        | _ -> acc))
+    |> List.sort ~compare:(fun p1 p2 -> Point.compare_by_row p2 p1)
+  in
+  List.iter squares_to_remove ~f:(fun { Point.col; row } ->
+    List.iter (List.range row (t.height - 1)) ~f:(fun row' ->
+      set t { Point.row = row'; col } (get t { Point.row = row' + 1; col}));
+    set t { Point.row = t.height - 1; col } None);
+  mark_squares_that_are_sweepable t
 ;;
 
 let add_piece_and_apply_gravity t ~moving_piece ~col =
